@@ -1,13 +1,29 @@
 import express from "express";
 import dotenv from "dotenv";
-import { ConnectDB } from "./config/db.config.js";
+import fileUpload  from "express-fileupload";
+import bodyParser  from "body-parser";
 
+
+import { ConnectDB } from "./config/db.config.js";
+import userRoutes from "./routes/user.routes.js"
 
 dotenv.config()
 
 const app = express();
 ConnectDB()
 
+app.use(bodyParser.json());
+app.use(fileUpload({
+  useTempFiles:true,
+  tempFileDir:"/tmp/"
+}))
+
+
+app.get("/health",(_req,res)=>{
+  res.send("Server is healthy")
+})
+
+app.use("/api/v1/user",userRoutes)
 
 app.listen(process.env.PORT, ()=>{
   console.log(`Server is runing at http://localhost:${process.env.PORT}`);
