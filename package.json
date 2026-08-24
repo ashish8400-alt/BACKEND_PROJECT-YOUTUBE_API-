@@ -18,6 +18,10 @@
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "express-fileupload": "^1.5.2",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.9.3"
+  },
+  "devDependencies": {
+    "prettier": "^3.9.6"
   }
 }
