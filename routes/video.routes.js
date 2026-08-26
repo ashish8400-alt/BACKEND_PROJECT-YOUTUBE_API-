@@ -13,6 +13,7 @@ const router = express.Router();
 router.post("/upload", checkAuth, async (req, res) => {
   try {
     const { title, description, category, tags } = req.body;
+    
     if (!req.files || !req.files.thumbnail) {
       res.status(400).json({ error: "video and thumbnail are required" });
     }
@@ -60,6 +61,25 @@ router.post("/upload", checkAuth, async (req, res) => {
   }
 });
 
+
+// Update video (no video changed only metadata and thumnail )
+
+router.post("/update/:id", checkAuth, async (req,res)=>{
+try {
+    const {title, description, tags, category} = req.body;
+  const videoId = req.params.id;
+   
+  // find video by id
+  let video = await Video.findById(videoId);
+
+  if(!video){
+    return res.status(404).json({error: "videos not found"})
+  }
+
+} catch (error) {
+  
+}
+})
 
 
 
