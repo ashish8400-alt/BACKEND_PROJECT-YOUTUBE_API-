@@ -43,12 +43,8 @@ router.post("/signup", async (req, res) => {
   }
 });
 
-
-
-
 // For Login
 router.post("/Login", async (req, res) => {
-  
   try {
     const existingUser = await User.findOne({ email: req.body.email });
 
@@ -77,7 +73,6 @@ router.post("/Login", async (req, res) => {
       { expiresIn: "10d" },
     );
 
-    
     res.status(200).json({
       _id: existingUser._id,
       channelName: existingUser.channelName,
@@ -85,12 +80,10 @@ router.post("/Login", async (req, res) => {
       phone: existingUser.phone,
       logoId: existingUser.logoId,
       logoUrl: existingUser.logoUrl,
-      token:token,
-      subscribers:existingUser.subscribers,
-      subscribedChannels:existingUser.subscribedChannels,
+      token: token,
+      subscribers: existingUser.subscribers,
+      subscribedChannels: existingUser.subscribedChannels,
     });
-
-
   } catch (error) {
     console.log(error);
     res
@@ -98,8 +91,5 @@ router.post("/Login", async (req, res) => {
       .json({ error: "Something went wrong", message: error.message });
   }
 });
-
-
-
 
 export default router;

@@ -1,9 +1,9 @@
-import mongoose  from "mongoose";
+import mongoose from "mongoose";
 
-
-const videoSchema = new mongoose.Schema({
-  _id:mongoose.Schema.Types.ObjectId,
-   title: {
+const videoSchema = new mongoose.Schema(
+  {
+    _id: mongoose.Schema.Types.ObjectId,
+    title: {
       type: String,
       required: true,
       trim: true,
@@ -48,7 +48,7 @@ const videoSchema = new mongoose.Schema({
     disLikedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     viewedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const videoModel = mongoose.model("video", videoSchema);

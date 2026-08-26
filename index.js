@@ -7,7 +7,6 @@ import { ConnectDB } from "./config/db.config.js";
 import userRoutes from "./routes/user.routes.js";
 import videoRoutes from "./routes/video.routes.js";
 
-
 dotenv.config();
 
 const app = express();
@@ -25,8 +24,6 @@ app.use(
 app.get("/health", (_req, res) => {
   res.send("Server is healthy");
 });
-
-
 
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/video", videoRoutes);
