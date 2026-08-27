@@ -62,24 +62,47 @@ router.post("/upload", checkAuth, async (req, res) => {
 });
 
 
-// Update video (no video changed only metadata and thumnail )
 
-router.post("/update/:id", checkAuth, async (req,res)=>{
-try {
-    const {title, description, tags, category} = req.body;
-  const videoId = req.params.id;
-   
-  // find video by id
-  let video = await Video.findById(videoId);
+// 🔹 Update Video (No Video Change, Only Metadata & Thumbnail)
+router.put("/update/:id", checkAuth, async (req, res) => {
+  try {
+    const { title, description, category, tags } = req.body;
+    const videoId = req.params.id;
 
-  if(!video){
-    return res.status(404).json({error: "videos not found"})
+    // Find Video
+    let video = await Video.findById(`video/${videoId}`);
+    if (!video) return res.status(404).json({ error: "Video not found" });
+
+    // Ensure Only the Owner Can Update
+    if (video.user_id.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+
+    // If new thumbnail provided, delete old one & upload new
+    if (req.files && req.files.thumbnail) {
+      await cloudinary.uploader.destroy(video.thumbnmailId); // Delete old thumbnail
+
+      const thumbnailUpload = await cloudinary.uploader.upload(req.files.thumbnail.tempFilePath, {
+        folder: "thumbnails",
+      });
+
+      video.thumbnmailUrl = thumbnailUpload.secure_url;
+      video.thumbnmailId = thumbnailUpload.public_id;
+    }
+
+    // Update Fields
+    video.title = title || video.title;
+    video.description = description || video.description;
+    video.category = category || video.category;
+    video.tags = tags ? tags.split(",") : video.tags;
+
+    await video.save();
+    res.status(200).json({ message: "Video updated successfully", video });
+  } catch (error) {
+    console.error("Update Error:", error);
+    res.status(500).json({ message: "Something went wrong" });
   }
-
-} catch (error) {
-  
-}
-})
+});
 
 
 
