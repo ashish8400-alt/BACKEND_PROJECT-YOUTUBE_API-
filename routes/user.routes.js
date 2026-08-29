@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 
 const router = express.Router();
 
+
 // For Signup
 router.post("/signup", async (req, res) => {
   try {
