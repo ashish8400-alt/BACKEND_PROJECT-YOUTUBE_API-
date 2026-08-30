@@ -100,7 +100,7 @@ router.put("/update/:id", checkAuth, async (req, res) => {
     res.status(200).json({ message: "Video updated successfully", video });
   } catch (error) {
     console.error("Update Error:", error);
-    res.status(500).json({ message: "Something went wrong" });
+    res.status(500).json({ message: "Something went wrong please check" });
   }
 });
 
