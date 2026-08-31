@@ -104,6 +104,30 @@ router.put("/update/:id", checkAuth, async (req, res) => {
   }
 });
 
+// Delete Video
+
+router.delete("/delete/:id", checkAuth, async (req, res) => {
+  try {
+    const videoId = req.params.id;
+
+    let video = await Video.findById(`video/${videoId}`);
+    if (!video) return res.status(404).json({ error: "Video not found" });
+
+    if (video.user_id.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ error: "Unauthorized" });
+    }
+
+    // Delete from Cloudinary
+    await cloudinary.uploader.destroy(video.videoId, { resource_type: "video" });
+    await cloudinary.uploader.destroy(video.thumbnmailId);
+
+    await Video.findByIdAndDelete(videoId);
+    res.status(200).json({ message: "Video deleted successfully" });
+  } catch (error) {
+    console.error("Delete Error:", error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+});
 
 
 export default router;
