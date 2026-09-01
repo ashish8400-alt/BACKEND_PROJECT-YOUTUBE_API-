@@ -130,4 +130,16 @@ router.delete("/delete/:id", checkAuth, async (req, res) => {
 });
 
 
+// 🔹 Get All Videos
+router.get("/all", async (req, res) => {
+  try {
+    const videos = await Video.find().sort({ createdAt: -1 });
+    res.status(200).json(videos);
+  } catch (error) {
+    console.error("Fetch Error:", error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+});
+
+
 export default router;
