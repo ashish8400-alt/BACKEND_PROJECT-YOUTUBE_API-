@@ -154,5 +154,32 @@ router.get("/my-videos", checkAuth, async (req, res) => {
   }
 });
 
+// Get Video by ID
+router.get("/:id", checkAuth, async(req, res)=>{
+
+ try {
+   
+ const videoId = req.params.id;
+  const userId =  req.user._id;
+
+   // Use findByIdAndUpdate to add the user ID to the viewedBy array if not already present
+   const video = await Video.findByIdAndUpdate(
+    videoId,
+    {$addToSet:{viewed: userId}}, // Add userId to viewed array if not already present
+    {new: true} // Return the updated document
+   )
+
+   if(!video) return res.status(404).json({error:"Video not found"});
+
+   res.status(200).json(video);
+  } catch (error) {
+    console.error("Fetch Error:", error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+
+})
+
+
+
 
 export default router;
