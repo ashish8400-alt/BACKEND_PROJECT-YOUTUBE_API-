@@ -154,6 +154,8 @@ router.get("/my-videos", checkAuth, async (req, res) => {
   }
 });
 
+
+
 // Get Video by ID
 router.get("/:id", checkAuth, async(req, res)=>{
 
@@ -179,15 +181,34 @@ router.get("/:id", checkAuth, async(req, res)=>{
 
 })
 
+
+
 // 🔹 Get Videos by Category
-router.get("/category/:category", async (req, res) => {
+router.get("/categorys/:category", async (req, res) => {
   try {
-    const videos = await Video.find({ category: req.params.category }).sort({ createdAt: -1 });
+    const category = req.params.category;
+    const videos = await Video.find({ categorys: category }).sort({ createdAt: -1 });
     res.status(200).json(videos);
   } catch (error) {
     console.error("Fetch Error:", error);
     res.status(500).json({ message: "Something went wrong" });
   }
 });
+
+
+//🔹 Get Videos by Tags
+router.get("/tags/:tag", async(req, res)=>{
+  try{
+   const tag = req.params.tag;
+   const videos = await Video.find({tags:tag}).sort({createdAt:-1});
+   res.status(200).json(videos);
+  }
+  catch(error){
+    console.error("Fetch Error:", error);
+    res.status(500).json({message: "Something went wrong"});
+  }
+})
+
+
 
 export default router;
