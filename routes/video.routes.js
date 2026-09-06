@@ -142,7 +142,6 @@ router.get("/all", async (req, res) => {
 });
 
 
-
 // 🔹 Get Own Videos
 router.get("/my-videos", checkAuth, async (req, res) => {
   try {
@@ -179,8 +178,7 @@ router.get("/:id", checkAuth, async(req, res)=>{
     res.status(500).json({ message: "Something went wrong" });
   }
 
-})
-
+});
 
 
 // 🔹 Get Videos by Category
@@ -208,6 +206,45 @@ router.get("/tags/:tag", async(req, res)=>{
     res.status(500).json({message: "Something went wrong"});
   }
 })
+
+
+// Like video
+router.post("/like", checkAuth, async (req, res)=>{
+  try{
+    const  {videoId} = req.body;
+    
+    const Like = await Video.findByIdAndUpdate(videoId,{
+      $addToSet: {likes: req.user._id}, // Add user ID to likedBy array if not already present
+      $pull:{ disLikes: req.user._id } // Remove user ID from disLikedBy array if present
+    })
+
+    res.status(200).json({message: "Video Liked successfully"});
+  }
+  catch(error){
+    console.error("Like Error:", error);
+    res.status(500).json({message: "Something went wrong"});
+  }
+});
+
+
+// Unlike video
+router.post("/dislike", checkAuth, async (req, res)=>{
+  try{
+       const {videoId}  = req.body;
+
+       const unlike = await Video.findByIdAndUpdate(videoId, {
+        $addToSet: {disLikes: req.user._id},
+        $pull: {likes: req.user._id}
+       })
+
+       res.status(200).json({message: "Video disliked successfully"});
+  }
+  catch(error){
+    console.error("Dislike Error:", error);
+    res.status(500).json({message: "Something went wrong"});
+  }
+})
+
 
 
 
