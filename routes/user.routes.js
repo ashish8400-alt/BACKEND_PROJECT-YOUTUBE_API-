@@ -11,7 +11,7 @@ const router = express.Router();
 // For Signup
 router.post("/signup", async (req, res) => {
   try {
-    console.log("request is coming");
+    // console.log("request is coming");
     const hashedPassword = await bcrypt.hash(req.body.password, 10);
     console.log(hashedPassword);
 
