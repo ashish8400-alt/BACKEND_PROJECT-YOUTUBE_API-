@@ -203,7 +203,7 @@ router.get("/tags/:tag", async(req, res)=>{
   }
   catch(error){
     console.error("Fetch Error:", error);
-    res.status(500).json({message: "Something went wrong"});
+    res.status(500).json({message: "Something went wrong. "});
   }
 })
 
