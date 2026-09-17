@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import User from "../models/user.models.js";
 import cloudinary from "../config/cloudinary.js";
 import jwt from "jsonwebtoken";
+import { checkAuth } from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
@@ -87,6 +88,35 @@ router.post("/Login", async (req, res) => {
     });
   } catch (error) {
     console.log(error);
+    res
+      .status(500)
+      .json({ error: "Something went wrong", message: error.message });
+  }
+});
+
+
+router.put("/update-profile", checkAuth, async (req, res) =>{
+  try{
+   
+    const {channelName, phone} = req.body;
+    let updateData = {channelName, phone};
+
+    //Handle profile picture update
+    if(req.files && req.files.logo){
+      const uploadImage = await cloudinary.uploader.upload(req.files.logo.tempFilePath);
+      updateData.logoUrl = uploadImage.secure_url;
+      updateData.logoId = uploadImage.public_id;
+    }
+
+    const updateUser = await User.findByIdAndUpdate(req.user._id, updateData, {new: true});
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: updateUser
+    });
+  }
+  catch(error){
+    console.error("Update Profile Error:", error);
     res
       .status(500)
       .json({ error: "Something went wrong", message: error.message });
