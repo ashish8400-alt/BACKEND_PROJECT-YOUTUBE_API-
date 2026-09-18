@@ -4,7 +4,7 @@ import mongoose from "mongoose";
 import Video from "../models/user.models.js";
 import User from "../models/video.models.js";
 import cloudinary from "../config/cloudinary.js";
-import checkAuth from "../middleware/auth.middleware.js";
+import {checkAuth} from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 

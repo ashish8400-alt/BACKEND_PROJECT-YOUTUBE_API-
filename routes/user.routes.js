@@ -95,6 +95,8 @@ router.post("/Login", async (req, res) => {
 });
 
 
+
+// For Update Profile
 router.put("/update-profile", checkAuth, async (req, res) =>{
   try{
    
@@ -122,5 +124,33 @@ router.put("/update-profile", checkAuth, async (req, res) =>{
       .json({ error: "Something went wrong", message: error.message });
   }
 });
+
+
+// For Subscribe to a channel
+router.post("/subscribe", checkAuth, async(req,res)=>{
+  try{
+      const {channelId} = req.body;
+
+      if(req.user._id.toString() === channelId){
+          return res.status(400).json({error: "You cannot subscribe to your own channel"});
+      }
+
+       // Add the channel to user's subscribed channels
+    await User.findByIdAndUpdate(req.user._id , {
+      $addToSet: { subscribedChannels: channelId },
+    });
+
+    // Increment the subscriber count of the channel
+    await User.findByIdAndUpdate(channelId, {
+      $inc: { subscribers: 1 },
+    });
+
+    res.status(200).json({ message: "Subscribed successfully" });
+  }
+  catch(error){
+console.error("Subscribe Error:",error);
+res.status(500).json({error: "Something went wrong", message: error.message});
+  }
+})
 
 export default router;
